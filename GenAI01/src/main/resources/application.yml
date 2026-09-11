@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: GenAI01
+
+  ai:
+    google:
+      genai:
+        api-key: ${GOOGLE_API_KEY}
+        chat:
+          model: ${GOOGLE_MODEL:gemini-3.5-flash-lite}
+
+    openai:
+      api-key: ${OPEN_API_KEY}
+      chat:
+        model: ${OPEN_AI_MODEL:gpt-5.4-nano}
+
+
+
+logging:
+  pattern:
+    console: "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr([%thread]){cyan} %clr(%-5level){highlight} %clr(%logger{36}){magenta} - %msg%n"
+
+
+
+

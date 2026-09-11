@@ -1,0 +1,94 @@
+# =========================
+# Java
+# =========================
+
+*.class
+*.log
+
+# =========================
+# Maven
+# =========================
+
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# =========================
+# Gradle
+# =========================
+
+.gradle/
+build/
+
+# =========================
+# Spring Boot
+# =========================
+
+spring-boot-devtools.properties
+
+# =========================
+# IntelliJ IDEA
+# =========================
+
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# =========================
+# Eclipse
+# =========================
+
+.classpath
+.project
+.settings/
+
+# =========================
+# VS Code
+# =========================
+
+.vscode/
+
+# =========================
+# OS files
+# =========================
+
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================
+# Environment / secrets
+# =========================
+
+.env
+.env.*
+!.env.example
+
+# =========================
+# Local configuration
+# =========================
+
+application-local.yml
+application-local.yaml
+application-local.properties
+
+# =========================
+# Logs
+# =========================
+
+logs/
+*.log
+
+# =========================
+# Temporary files
+# =========================
+
+tmp/
+temp/
+*.tmp
+
+# =========================
+# Build output
+# =========================
+
+out/
