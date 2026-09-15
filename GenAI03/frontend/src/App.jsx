@@ -1,122 +1,71 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { AlertCircle, X } from 'lucide-react';
+import React, { useState } from 'react';
+import { ChatInput } from './components/ChatInput';
+import { Header } from './components/Header';
+import { MessageList } from './components/MessageList';
+import { useChatStream } from './hooks/useChatStream';
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const {
+    messages,
+    isStreaming,
+    error,
+    sendMessage,
+    stopStream,
+    clearMessages,
+  } = useChatStream();
+
+  const [dismissedError, setDismissedError] = useState(false);
+
+  const handleSelectPrompt = (promptText) => {
+    sendMessage(promptText);
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="flex flex-col h-screen w-full bg-[#0b0f17] text-gray-100 selection:bg-indigo-500/30 selection:text-indigo-200">
+      {/* Top Navigation */}
+      <Header
+        onClear={clearMessages}
+        messageCount={messages.length}
+        isStreaming={isStreaming}
+      />
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+      {/* Error Banner if any */}
+      {error && !dismissedError && (
+        <div className="bg-rose-950/80 border-b border-rose-800/80 px-4 py-2 text-xs sm:text-sm text-rose-200 flex items-center justify-between gap-3 backdrop-blur-md">
+          <div className="flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0" />
+            <span>{error}</span>
+          </div>
+          <button
+            onClick={() => setDismissedError(true)}
+            className="text-rose-400 hover:text-rose-200 p-1"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      )}
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      {/* Chat Messages / Prompt Suggestions area */}
+      <main className="flex-1 flex flex-col min-h-0 overflow-hidden relative">
+        {/* Subtle background glow decorative elements */}
+        <div className="pointer-events-none absolute top-10 left-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl" />
+        <div className="pointer-events-none absolute bottom-10 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl" />
+
+        <MessageList
+          messages={messages}
+          isStreaming={isStreaming}
+          onSelectPrompt={handleSelectPrompt}
+        />
+      </main>
+
+      {/* Input Area */}
+      <ChatInput
+        onSend={sendMessage}
+        onStop={stopStream}
+        isStreaming={isStreaming}
+        disabled={false}
+      />
+    </div>
+  );
 }
-
-export default App
