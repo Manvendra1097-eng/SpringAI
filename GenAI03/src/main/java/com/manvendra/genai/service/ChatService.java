@@ -6,32 +6,21 @@ import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class FoodAppService {
+public class ChatService {
 
     private final ChatClient chatClient;
 
     private List<Message> history = new ArrayList<>();
+    private List<Message> streamHistory = new ArrayList<>();
 
-    public FoodAppService(ChatClient chatClient) {
+    public ChatService(ChatClient chatClient) {
         this.chatClient = chatClient;
-    }
-
-    String prompt = """
-            Summarize this support ticket in 2 line
-            Ticket query : {query}
-            """;
-
-    public String summarize(String ticket) {
-
-        return chatClient.prompt()
-                .options(ChatOptions.builder().model("gpt-4o-mini"))
-                .user(p -> p.text(prompt).param("query", ticket))
-                .call().content();
     }
 
     public String chat(String message) {
@@ -42,6 +31,17 @@ public class FoodAppService {
                 .call().content();
         history.add(new AssistantMessage(output));
         return output;
+    }
+
+    public Flux<String> chatStream(String message) {
+        streamHistory.add(new UserMessage(message));
+        StringBuilder buffer = new StringBuilder();
+
+        return chatClient.prompt().options(ChatOptions.builder().model("gpt-4o-mini"))
+                .messages(streamHistory)
+                .stream().content().doOnNext(
+                        buffer::append
+                ).doOnComplete(() -> streamHistory.add(new AssistantMessage(buffer.toString())));
     }
 }
 

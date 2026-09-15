@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: GenAI03
+  external:
+    weather:
+      api-key: 60644a2840574be9899181630261409
+  ai:
+    openai:
+      api-key: ${OPEN_API_KEY}
+      chat:
+        model: ${OPEN_AI_MODEL}
+#    google:
+#      genai:
+#        api-key: ${GOOGLE_API_KEY}
+#        chat:
+#          model: ${GOOGLE_MODEL:gemini-3.5-flash-lite}
+

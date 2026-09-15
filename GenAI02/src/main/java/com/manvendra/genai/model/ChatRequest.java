@@ -1,6 +1,6 @@
-package com.manvendra.genai.controller.model;
+package com.manvendra.genai.model;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record ChatRequest(@NotBlank(message = "Message cannot be blank") String msg) {
+public record ChatRequest(@NotBlank(message = "Message cannot be blank") String msg, String studentName) {
 }

@@ -1,23 +1,28 @@
 package com.manvendra.genai.controller;
 
-import com.manvendra.genai.service.SummarizeService;
+import com.manvendra.genai.service.FoodAppService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
-public class SummarizeController {
+@RequestMapping("/api/foodapp")
+public class FoodAppController {
 
-    private final SummarizeService summarizeService;
+    private final FoodAppService foodAppService;
 
-    public SummarizeController(SummarizeService summarizeService) {
-        this.summarizeService = summarizeService;
+    public FoodAppController(FoodAppService foodAppService) {
+        this.foodAppService = foodAppService;
     }
 
     @PostMapping("/summarize")
     public String summarize(@RequestBody String ticket) {
-        return summarizeService.summarize(ticket);
+        return foodAppService.summarize(ticket);
+    }
+
+    @PostMapping(value = "/chat")
+    public String chat(@RequestBody String message) {
+        return foodAppService.chat(message);
     }
 }
