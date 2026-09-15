@@ -22,7 +22,7 @@ export default function App() {
   };
 
   return (
-    <div className="flex flex-col h-screen w-full bg-[#0b0f17] text-gray-100 selection:bg-indigo-500/30 selection:text-indigo-200">
+    <div className="flex flex-col h-screen w-full bg-[#0d0f12] text-[#e2e8f0] selection:bg-emerald-500/20 selection:text-emerald-300">
       {/* Top Navigation */}
       <Header
         onClear={clearMessages}
@@ -32,26 +32,22 @@ export default function App() {
 
       {/* Error Banner if any */}
       {error && !dismissedError && (
-        <div className="bg-rose-950/80 border-b border-rose-800/80 px-4 py-2 text-xs sm:text-sm text-rose-200 flex items-center justify-between gap-3 backdrop-blur-md">
-          <div className="flex items-center gap-2">
+        <div className="bg-rose-950/70 border-b border-rose-900/60 px-4 py-2 text-xs sm:text-sm text-rose-300 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2 max-w-4xl mx-auto w-full">
             <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0" />
             <span>{error}</span>
+            <button
+              onClick={() => setDismissedError(true)}
+              className="ml-auto text-rose-400 hover:text-rose-200 p-1"
+            >
+              <X className="w-4 h-4" />
+            </button>
           </div>
-          <button
-            onClick={() => setDismissedError(true)}
-            className="text-rose-400 hover:text-rose-200 p-1"
-          >
-            <X className="w-4 h-4" />
-          </button>
         </div>
       )}
 
-      {/* Chat Messages / Prompt Suggestions area */}
+      {/* Main Chat / Suggestions viewport */}
       <main className="flex-1 flex flex-col min-h-0 overflow-hidden relative">
-        {/* Subtle background glow decorative elements */}
-        <div className="pointer-events-none absolute top-10 left-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl" />
-        <div className="pointer-events-none absolute bottom-10 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl" />
-
         <MessageList
           messages={messages}
           isStreaming={isStreaming}
@@ -59,7 +55,7 @@ export default function App() {
         />
       </main>
 
-      {/* Input Area */}
+      {/* Bottom Input Area */}
       <ChatInput
         onSend={sendMessage}
         onStop={stopStream}

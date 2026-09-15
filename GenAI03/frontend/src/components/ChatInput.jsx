@@ -1,4 +1,4 @@
-import { Send, Square } from 'lucide-react';
+import { ArrowUp, Send, Square } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 
 export function ChatInput({ onSend, onStop, isStreaming, disabled }) {
@@ -34,11 +34,11 @@ export function ChatInput({ onSend, onStop, isStreaming, disabled }) {
   };
 
   return (
-    <div className="border-t border-gray-800/80 bg-gray-950/70 backdrop-blur-xl px-4 py-4 sm:px-6">
+    <div className="border-t border-[#202430] bg-[#0f1217] px-4 py-4 sm:px-6">
       <div className="max-w-4xl mx-auto">
         <form
           onSubmit={handleSubmit}
-          className="relative flex items-end gap-2 bg-gray-900/90 border border-gray-800 focus-within:border-indigo-500/70 focus-within:ring-1 focus-within:ring-indigo-500/40 rounded-2xl p-2 sm:p-2.5 transition-all shadow-lg shadow-black/40"
+          className="relative flex items-end gap-2 bg-[#14171f] border border-[#262b3a] focus-within:border-emerald-500/70 focus-within:ring-1 focus-within:ring-emerald-500/40 rounded-xl p-2 sm:p-2.5 transition-all"
         >
           {/* Textarea */}
           <textarea
@@ -49,20 +49,20 @@ export function ChatInput({ onSend, onStop, isStreaming, disabled }) {
             onKeyDown={handleKeyDown}
             placeholder={
               isStreaming
-                ? 'AI is responding... (Press Stop to interrupt)'
-                : 'Type your message here... (Enter to send, Shift+Enter for newline)'
+                ? 'AI is writing... Click Stop to interrupt'
+                : 'Ask anything or paste code... (Enter to send, Shift+Enter for newline)'
             }
             disabled={disabled}
-            className="w-full bg-transparent text-gray-100 placeholder-gray-500 text-sm sm:text-base resize-none focus:outline-none px-3 py-1.5 min-h-[42px] max-h-[180px] leading-relaxed"
+            className="w-full bg-transparent text-[#f1f5f9] placeholder-gray-500 text-sm sm:text-base resize-none focus:outline-none px-3 py-1.5 min-h-[42px] max-h-[180px] leading-relaxed"
           />
 
-          {/* Action Buttons */}
+          {/* Action Button */}
           <div className="flex items-center gap-1 pb-0.5">
             {isStreaming ? (
               <button
                 type="button"
                 onClick={onStop}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-rose-600/20 hover:bg-rose-600/30 text-rose-400 border border-rose-500/40 text-xs sm:text-sm font-medium transition-colors shadow-sm cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-rose-950/40 hover:bg-rose-900/50 text-rose-400 border border-rose-800/50 text-xs sm:text-sm font-medium transition-colors cursor-pointer"
                 title="Stop generation"
               >
                 <Square className="w-3.5 h-3.5 fill-current" />
@@ -72,18 +72,21 @@ export function ChatInput({ onSend, onStop, isStreaming, disabled }) {
               <button
                 type="submit"
                 disabled={!input.trim() || disabled}
-                className="p-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 disabled:opacity-40 disabled:hover:from-indigo-600 disabled:hover:to-violet-600 text-white transition-all duration-200 shadow-md shadow-indigo-600/20 cursor-pointer disabled:cursor-not-allowed"
+                className="p-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 disabled:bg-[#1e2330] text-gray-950 disabled:text-gray-500 transition-all duration-150 cursor-pointer disabled:cursor-not-allowed flex items-center justify-center font-bold shadow-sm"
                 title="Send message"
               >
-                <Send className="w-4 h-4" />
+                <ArrowUp className="w-4 h-4 stroke-[2.5]" />
               </button>
             )}
           </div>
         </form>
 
-        {/* Footer info */}
-        <div className="flex items-center justify-between text-[11px] text-gray-500 mt-2 px-2">
-          <span>Streaming endpoint: <code className="text-gray-400 font-mono">POST /api/chat/stream</code></span>
+        {/* Footer subtle info */}
+        <div className="flex items-center justify-between text-[11px] text-gray-500 mt-2 px-1">
+          <span className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            <span>Endpoint: <code className="text-gray-400 font-mono">POST /api/chat/stream</code></span>
+          </span>
           <span className="hidden sm:inline">Press Enter ↵ to send</span>
         </div>
       </div>
