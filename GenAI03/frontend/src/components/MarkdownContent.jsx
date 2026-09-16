@@ -8,15 +8,17 @@ import 'prismjs/components/prism-css';
 import 'prismjs/components/prism-java';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-json';
-import 'prismjs/components/prism-markup'; // HTML / XML
+import 'prismjs/components/prism-markup';
 import 'prismjs/components/prism-python';
 import 'prismjs/components/prism-sql';
 import 'prismjs/components/prism-typescript';
 import 'prismjs/components/prism-yaml';
 import React, { useMemo, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 /**
- * Language normalization map
+ * Language normalization map for PrismJS
  */
 const LANG_MAP = {
   js: 'javascript',
@@ -38,9 +40,6 @@ const LANG_MAP = {
   cpp: 'cpp',
 };
 
-/**
- * Highlight a single code snippet using PrismJS
- */
 function highlightCode(code, rawLang) {
   const lang = (rawLang || '').toLowerCase().trim();
   const normalizedLang = LANG_MAP[lang] || lang;
@@ -54,7 +53,6 @@ function highlightCode(code, rawLang) {
     }
   }
 
-  // Safe fallback: HTML escape
   return code
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -62,7 +60,7 @@ function highlightCode(code, rawLang) {
 }
 
 /**
- * AlgoMaster-styled Code Block with syntax highlighting and line numbers
+ * AlgoMaster-styled Code Block with line numbers, language tag, and copy action
  */
 function CodeBlock({ language, code }) {
   const [copied, setCopied] = useState(false);
@@ -74,29 +72,25 @@ function CodeBlock({ language, code }) {
   };
 
   const lines = useMemo(() => {
-    const rawLines = code ? code.split('\n') : [];
-    // Remove last trailing blank line
+    const rawLines = code ? String(code).split('\n') : [];
     if (rawLines.length > 1 && rawLines[rawLines.length - 1] === '') {
       rawLines.pop();
     }
     return rawLines;
   }, [code]);
 
-  // Syntax highlight each line separately so line numbers align perfectly
   const highlightedLines = useMemo(() => {
     return lines.map((line) => highlightCode(line, language));
   }, [lines, language]);
 
-  const displayLang = language || 'code';
-
   return (
     <div className="my-4 rounded-xl overflow-hidden border border-[#242835] bg-[#12151b] shadow-xl">
-      {/* Code Block Header */}
+      {/* Header */}
       <div className="flex items-center justify-between px-3.5 py-2 bg-[#161922] border-b border-[#242835] text-xs">
         <div className="flex items-center gap-2 text-gray-300 font-mono font-medium">
           <Code2 className="w-3.5 h-3.5 text-emerald-400" />
           <span className="text-gray-200 uppercase tracking-wider text-[11px] font-semibold">
-            {displayLang}
+            {language || 'code'}
           </span>
         </div>
 
@@ -119,7 +113,7 @@ function CodeBlock({ language, code }) {
         </button>
       </div>
 
-      {/* Editor Body with Line Numbers */}
+      {/* Code Editor Body with Line Numbers */}
       <div className="flex overflow-x-auto text-xs sm:text-[13px] font-mono leading-relaxed py-3 bg-[#0f1217] prism-code">
         {/* Line Numbers Column */}
         <div className="select-none text-right pr-3.5 pl-3 text-[#4b5568] border-r border-[#1f232d] min-w-[2.5rem]">
@@ -144,69 +138,7 @@ function CodeBlock({ language, code }) {
 }
 
 /**
- * Format inline text: bold, italic, code, links
- */
-function renderInline(text) {
-  if (!text) return null;
-
-  // Split by inline code: `code`
-  const codeParts = text.split(/(`[^`]+`)/g);
-
-  return codeParts.map((part, index) => {
-    if (part.startsWith('`') && part.endsWith('`')) {
-      const codeContent = part.slice(1, -1);
-      return (
-        <code
-          key={`code-${index}`}
-          className="px-1.5 py-0.5 mx-0.5 text-xs font-mono rounded bg-[#0d281e]/90 text-[#34d399] border border-[#065f46]/60 font-medium select-text"
-        >
-          {codeContent}
-        </code>
-      );
-    }
-
-    // Split bold: **bold** or __bold__
-    const boldParts = part.split(/(\*\*[^*]+\*\*|__[^_]+__)/g);
-
-    return boldParts.map((bPart, bIndex) => {
-      if (
-        (bPart.startsWith('**') && bPart.endsWith('**')) ||
-        (bPart.startsWith('__') && bPart.endsWith('__'))
-      ) {
-        return (
-          <strong
-            key={`bold-${index}-${bIndex}`}
-            className="font-semibold text-white"
-          >
-            {bPart.slice(2, -2)}
-          </strong>
-        );
-      }
-
-      // Split italics: *italic* or _italic_
-      const italicParts = bPart.split(/(\*[^*]+\*|_[^_]+_)/g);
-      return italicParts.map((iPart, iIndex) => {
-        if (
-          (iPart.startsWith('*') && iPart.endsWith('*')) ||
-          (iPart.startsWith('_') && iPart.endsWith('_'))
-        ) {
-          return (
-            <em
-              key={`italic-${index}-${bIndex}-${iIndex}`}
-              className="italic text-gray-200"
-            >
-              {iPart.slice(1, -1)}
-            </em>
-          );
-        }
-        return iPart;
-      });
-    });
-  });
-}
-
-/**
- * Main Markdown Parser & Renderer
+ * Production-ready Markdown Renderer using react-markdown & remark-gfm
  */
 export function MarkdownContent({ content, isStreaming }) {
   if (!content && isStreaming) {
@@ -220,172 +152,153 @@ export function MarkdownContent({ content, isStreaming }) {
 
   if (!content) return null;
 
-  // Split content by code blocks: ```lang ... ```
-  const codeBlockRegex = /```([a-zA-Z0-9_-]*)\n([\s\S]*?)```/g;
-  const elements = [];
-  let lastIndex = 0;
-  let match;
-
-  while ((match = codeBlockRegex.exec(content)) !== null) {
-    const textBefore = content.slice(lastIndex, match.index);
-    if (textBefore) {
-      elements.push({ type: 'text', value: textBefore });
-    }
-    elements.push({
-      type: 'code',
-      language: match[1] || 'code',
-      value: match[2],
-    });
-    lastIndex = match.index + match[0].length;
-  }
-
-  const remainingText = content.slice(lastIndex);
-  if (remainingText) {
-    // Check if there is an unclosed code block during active streaming
-    const openFenceIndex = remainingText.indexOf('```');
-    if (openFenceIndex !== -1) {
-      const beforeOpenFence = remainingText.slice(0, openFenceIndex);
-      if (beforeOpenFence) {
-        elements.push({ type: 'text', value: beforeOpenFence });
-      }
-      const rawAfter = remainingText.slice(openFenceIndex + 3);
-      const firstNewline = rawAfter.indexOf('\n');
-      const lang = firstNewline !== -1 ? rawAfter.slice(0, firstNewline) : '';
-      const code = firstNewline !== -1 ? rawAfter.slice(firstNewline + 1) : rawAfter;
-      elements.push({ type: 'code', language: lang, value: code });
-    } else {
-      elements.push({ type: 'text', value: remainingText });
-    }
-  }
-
   return (
-    <div className="text-sm sm:text-[15px] leading-relaxed text-[#c7cbd2]">
-      {elements.map((el, i) => {
-        if (el.type === 'code') {
-          return <CodeBlock key={i} language={el.language} code={el.value} />;
-        }
+    <div className="markdown-content text-sm sm:text-[15px] leading-relaxed text-[#c7cbd2]">
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+          // Custom Code component: separates block code vs inline chips
+          code({ node, inline, className, children, ...props }) {
+            const match = /language-(\w+)/.exec(className || '');
+            const rawText = String(children).replace(/\n$/, '');
 
-        const lines = el.value.split('\n');
-        return (
-          <div key={i} className="space-y-2 my-1">
-            {lines.map((line, lineIdx) => {
-              const trimmed = line.trim();
-              if (!trimmed) {
-                return <div key={lineIdx} className="h-1.5" />;
-              }
-
-              // Headings: matches #, ##, ###, ####, #####, ###### (with or without space)
-              const headingMatch = trimmed.match(/^(#{1,6})\s*(.*)$/);
-              if (headingMatch) {
-                const level = headingMatch[1].length;
-                const headingText = headingMatch[2];
-
-                switch (level) {
-                  case 1:
-                    return (
-                      <h1
-                        key={lineIdx}
-                        className="text-xl sm:text-2xl font-extrabold text-white mt-6 mb-3 pb-1.5 border-b border-[#222633]"
-                      >
-                        {renderInline(headingText)}
-                      </h1>
-                    );
-                  case 2:
-                    return (
-                      <h2
-                        key={lineIdx}
-                        className="text-lg sm:text-xl font-bold text-white mt-5 mb-2.5 pb-1 border-b border-[#222633]"
-                      >
-                        {renderInline(headingText)}
-                      </h2>
-                    );
-                  case 3:
-                    return (
-                      <h3
-                        key={lineIdx}
-                        className="text-base sm:text-lg font-bold text-white mt-4 mb-2"
-                      >
-                        {renderInline(headingText)}
-                      </h3>
-                    );
-                  case 4:
-                    return (
-                      <h4
-                        key={lineIdx}
-                        className="text-sm sm:text-base font-bold text-emerald-400 mt-3.5 mb-1.5"
-                      >
-                        {renderInline(headingText)}
-                      </h4>
-                    );
-                  case 5:
-                  case 6:
-                    return (
-                      <h5
-                        key={lineIdx}
-                        className="text-xs sm:text-sm font-semibold text-gray-300 mt-2.5 mb-1 uppercase tracking-wider"
-                      >
-                        {renderInline(headingText)}
-                      </h5>
-                    );
-                  default:
-                    break;
-                }
-              }
-
-              // Divider: --- or ***
-              if (/^(\*\*\*|---|___)$/.test(trimmed)) {
-                return <hr key={lineIdx} className="border-t border-[#222633] my-4" />;
-              }
-
-              // Bullet points
-              if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
-                return (
-                  <div key={lineIdx} className="flex items-start gap-2.5 pl-1">
-                    <span className="text-emerald-400 select-none text-xs mt-1.5">●</span>
-                    <div className="flex-1 leading-relaxed">
-                      {renderInline(trimmed.slice(2))}
-                    </div>
-                  </div>
-                );
-              }
-
-              // Numbered list
-              const numMatch = trimmed.match(/^(\d+)\.\s+(.*)$/);
-              if (numMatch) {
-                return (
-                  <div key={lineIdx} className="flex items-start gap-2.5 pl-1">
-                    <span className="text-emerald-400 font-mono text-xs font-semibold select-none mt-1 min-w-[1.2rem]">
-                      {numMatch[1]}.
-                    </span>
-                    <div className="flex-1 leading-relaxed">
-                      {renderInline(numMatch[2])}
-                    </div>
-                  </div>
-                );
-              }
-
-              // Blockquotes
-              if (trimmed.startsWith('> ')) {
-                return (
-                  <blockquote
-                    key={lineIdx}
-                    className="border-l-2 border-emerald-500/70 pl-3 py-1 my-2 bg-[#12161f] text-gray-300 italic rounded-r"
-                  >
-                    {renderInline(trimmed.slice(2))}
-                  </blockquote>
-                );
-              }
-
-              // Paragraph
+            if (!inline && (match || String(children).includes('\n'))) {
               return (
-                <p key={lineIdx} className="m-0 leading-relaxed text-[#c7cbd2]">
-                  {renderInline(line)}
-                </p>
+                <CodeBlock
+                  language={match ? match[1] : ''}
+                  code={rawText}
+                />
               );
-            })}
-          </div>
-        );
-      })}
+            }
+
+            // Inline code chip (AlgoMaster style)
+            return (
+              <code
+                className="px-1.5 py-0.5 mx-0.5 text-xs font-mono rounded bg-[#0d281e]/90 text-[#34d399] border border-[#065f46]/60 font-medium select-text"
+                {...props}
+              >
+                {children}
+              </code>
+            );
+          },
+
+          // Headings with precise AlgoMaster hierarchy
+          h1: ({ children }) => (
+            <h1 className="text-xl sm:text-2xl font-extrabold text-white mt-6 mb-3 pb-1.5 border-b border-[#222633]">
+              {children}
+            </h1>
+          ),
+          h2: ({ children }) => (
+            <h2 className="text-lg sm:text-xl font-bold text-white mt-5 mb-2.5 pb-1 border-b border-[#222633]">
+              {children}
+            </h2>
+          ),
+          h3: ({ children }) => (
+            <h3 className="text-base sm:text-lg font-bold text-white mt-4 mb-2">
+              {children}
+            </h3>
+          ),
+          h4: ({ children }) => (
+            <h4 className="text-sm sm:text-base font-bold text-emerald-400 mt-3.5 mb-1.5">
+              {children}
+            </h4>
+          ),
+          h5: ({ children }) => (
+            <h5 className="text-xs sm:text-sm font-semibold text-gray-300 mt-2.5 mb-1 uppercase tracking-wider">
+              {children}
+            </h5>
+          ),
+          h6: ({ children }) => (
+            <h6 className="text-xs font-semibold text-gray-400 mt-2 mb-1 uppercase">
+              {children}
+            </h6>
+          ),
+
+          // Paragraphs & Text
+          p: ({ children }) => (
+            <p className="m-0 leading-relaxed text-[#c7cbd2] mb-2.5">
+              {children}
+            </p>
+          ),
+          strong: ({ children }) => (
+            <strong className="font-semibold text-white">{children}</strong>
+          ),
+          em: ({ children }) => (
+            <em className="italic text-gray-200">{children}</em>
+          ),
+
+          // Lists (ordered & unordered)
+          ul: ({ children }) => (
+            <ul className="space-y-1.5 my-2.5 pl-5 list-disc marker:text-emerald-400">
+              {children}
+            </ul>
+          ),
+          ol: ({ children }) => (
+            <ol className="space-y-1.5 my-2.5 pl-5 list-decimal marker:text-emerald-400 marker:font-mono marker:text-xs marker:font-semibold">
+              {children}
+            </ol>
+          ),
+          li: ({ children }) => (
+            <li className="leading-relaxed text-[#c7cbd2] pl-1">
+              {children}
+            </li>
+          ),
+
+          // Blockquotes
+          blockquote: ({ children }) => (
+            <blockquote className="border-l-2 border-emerald-500/70 pl-3.5 py-1 my-3 bg-[#12161f] text-gray-300 italic rounded-r">
+              {children}
+            </blockquote>
+          ),
+
+          // Horizontal rule
+          hr: () => <hr className="border-t border-[#222633] my-4" />,
+
+          // Tables (GFM)
+          table: ({ children }) => (
+            <div className="overflow-x-auto my-3 rounded-lg border border-[#222633]">
+              <table className="w-full text-xs sm:text-sm text-left border-collapse">
+                {children}
+              </table>
+            </div>
+          ),
+          thead: ({ children }) => (
+            <thead className="bg-[#141820] text-emerald-300 font-semibold border-b border-[#222633]">
+              {children}
+            </thead>
+          ),
+          tbody: ({ children }) => (
+            <tbody className="divide-y divide-[#222633] bg-[#0f1217]">
+              {children}
+            </tbody>
+          ),
+          tr: ({ children }) => <tr>{children}</tr>,
+          th: ({ children }) => (
+            <th className="p-3 border-r border-[#222633] last:border-r-0 font-semibold">
+              {children}
+            </th>
+          ),
+          td: ({ children }) => (
+            <td className="p-2.5 border-r border-[#222633] last:border-r-0 text-gray-300">
+              {children}
+            </td>
+          ),
+
+          // Links
+          a: ({ href, children }) => (
+            <a
+              href={href}
+              target="_blank"
+              rel="noreferrer"
+              className="text-emerald-400 hover:text-emerald-300 underline underline-offset-2 transition-colors"
+            >
+              {children}
+            </a>
+          ),
+        }}
+      >
+        {content}
+      </ReactMarkdown>
 
       {isStreaming && <span className="cursor-blink" />}
     </div>
