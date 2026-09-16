@@ -71,7 +71,7 @@ export function MessageItem({ message }) {
           {message.content && (
             <button
               onClick={handleCopy}
-              className="opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity p-1 rounded hover:bg-[#1d222e] text-gray-400 hover:text-gray-200 cursor-pointer"
+              className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity p-1 rounded hover:bg-[#1d222e] text-gray-400 hover:text-gray-200 cursor-pointer focus:outline-none"
               title="Copy message"
             >
               {copied ? (
