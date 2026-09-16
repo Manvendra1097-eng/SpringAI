@@ -15,25 +15,23 @@ export function MessageItem({ message }) {
 
   return (
     <div
-      className={`group flex gap-3 sm:gap-4 p-4 sm:p-5 rounded-xl transition-colors ${
-        isUser
+      className={`group flex gap-3 sm:gap-4 p-4 sm:p-5 rounded-xl transition-colors ${isUser
           ? 'bg-[#151821] border border-[#262b3a] ml-4 sm:ml-12'
           : 'bg-[#12141a] border border-[#202430] mr-4 sm:mr-12'
-      }`}
+        }`}
     >
       {/* Avatar */}
-      <div className="flex-shrink-0 pt-0.5">
+      <div className="shrink-0 pt-0.5">
         {isUser ? (
           <div className="w-8 h-8 rounded-lg bg-[#1e2330] border border-[#2e3547] flex items-center justify-center text-gray-300">
             <User className="w-4 h-4" />
           </div>
         ) : (
           <div
-            className={`w-8 h-8 rounded-lg flex items-center justify-center border transition-colors ${
-              message.isStreaming
+            className={`w-8 h-8 rounded-lg flex items-center justify-center border transition-colors ${message.isStreaming
                 ? 'bg-[#0f241a] border-emerald-500/50 text-emerald-400 animate-pulse'
                 : 'bg-[#161a22] border-[#292f3e] text-emerald-400'
-            }`}
+              }`}
           >
             <Bot className="w-4 h-4" />
           </div>
