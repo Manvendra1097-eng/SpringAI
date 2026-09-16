@@ -34,7 +34,7 @@ export function ChatInput({ onSend, onStop, isStreaming, disabled }) {
   };
 
   return (
-    <div className="border-t border-[#202430] bg-[#0f1217] px-4 py-4 sm:px-6">
+    <div className="border-t border-[#202430] bg-[#0f1217] px-4 py-4 sm:px-6 shrink-0">
       <div className="max-w-4xl mx-auto">
         <form
           onSubmit={handleSubmit}
@@ -82,11 +82,7 @@ export function ChatInput({ onSend, onStop, isStreaming, disabled }) {
         </form>
 
         {/* Footer subtle info */}
-        <div className="flex items-center justify-between text-[11px] text-gray-500 mt-2 px-1">
-          <span className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            <span>Endpoint: <code className="text-gray-400 font-mono">POST /api/chat/stream</code></span>
-          </span>
+        <div className="flex justify-end text-[11px] text-gray-500 mt-2 px-1 ">
           <span className="hidden sm:inline">Press Enter ↵ to send</span>
         </div>
       </div>

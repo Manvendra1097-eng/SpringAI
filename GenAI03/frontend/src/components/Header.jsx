@@ -1,12 +1,21 @@
-import { Bot, CheckCircle2, Radio, Sparkles, Trash2 } from 'lucide-react';
+import { Bot, CheckCircle2, PanelLeft, Radio, Sparkles, Trash2 } from 'lucide-react';
 import React from 'react';
 
-export function Header({ onClear, messageCount, isStreaming }) {
+export function Header({ onClear, messageCount, isStreaming, isSidebarOpen, onToggleSidebar }) {
   return (
-    <header className="border-b border-[#222632] bg-[#11141a]/95 backdrop-blur-md px-4 py-3 sm:px-6 sticky top-0 z-20">
-      <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
+    <header className="border-b border-[#222632] bg-[#11141a]/95 backdrop-blur-md px-3 sm:px-5 py-2.5 shrink-0 z-20">
+      <div className="w-full flex items-center justify-between gap-4">
         {/* Brand & Engine */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          {onToggleSidebar && (
+            <button
+              onClick={onToggleSidebar}
+              className="p-1.5 rounded-lg text-gray-400 hover:text-gray-200 hover:bg-[#1c212d] border border-transparent hover:border-[#2a3040] transition-colors cursor-pointer"
+              title={isSidebarOpen ? 'Collapse sidebar' : 'Open sidebar'}
+            >
+              <PanelLeft className="w-4 h-4" />
+            </button>
+          )}
           <div className="w-8 h-8 rounded-lg bg-[#161a22] border border-[#2a2f3d] flex items-center justify-center text-emerald-400 shadow-sm">
             <Bot className="w-4 h-4" />
           </div>
