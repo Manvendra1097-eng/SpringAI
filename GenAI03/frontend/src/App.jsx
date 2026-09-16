@@ -34,7 +34,7 @@ export default function App() {
       {error && !dismissedError && (
         <div className="bg-rose-950/70 border-b border-rose-900/60 px-4 py-2 text-xs sm:text-sm text-rose-300 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2 max-w-4xl mx-auto w-full">
-            <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0" />
+            <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
             <span>{error}</span>
             <button
               onClick={() => setDismissedError(true)}

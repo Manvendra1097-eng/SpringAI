@@ -1,5 +1,4 @@
 import { Code, Cpu, Sparkles, Zap } from 'lucide-react';
-import React from 'react';
 import { SUGGESTED_PROMPTS } from '../constants/prompts';
 
 const ICONS = {
@@ -37,7 +36,7 @@ export function PromptSuggestions({ onSelectPrompt }) {
               onClick={() => onSelectPrompt(item.prompt)}
               className="group p-4 rounded-xl bg-[#14171e] hover:bg-[#191d26] border border-[#222633] hover:border-emerald-500/40 transition-all duration-150 flex items-start gap-3.5 text-left cursor-pointer"
             >
-              <div className="p-2 rounded-lg bg-[#1a1f2c] border border-[#272e40] text-emerald-400 group-hover:bg-[#0f241a] group-hover:border-emerald-700/50 group-hover:text-emerald-300 transition-colors flex-shrink-0 mt-0.5">
+              <div className="p-2 rounded-lg bg-[#1a1f2c] border border-[#272e40] text-emerald-400 group-hover:bg-[#0f241a] group-hover:border-emerald-700/50 group-hover:text-emerald-300 transition-colors shrink-0 mt-0.5">
                 <IconComponent className="w-4 h-4" />
               </div>
               <div className="flex-1 min-w-0">

@@ -1,5 +1,5 @@
-import { ArrowUp, Send, Square } from 'lucide-react';
-import React, { useEffect, useRef, useState } from 'react';
+import { ArrowUp, Square } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
 export function ChatInput({ onSend, onStop, isStreaming, disabled }) {
   const [input, setInput] = useState('');
@@ -53,7 +53,7 @@ export function ChatInput({ onSend, onStop, isStreaming, disabled }) {
                 : 'Ask anything or paste code... (Enter to send, Shift+Enter for newline)'
             }
             disabled={disabled}
-            className="w-full bg-transparent text-[#f1f5f9] placeholder-gray-500 text-sm sm:text-base resize-none focus:outline-none px-3 py-1.5 min-h-[42px] max-h-[180px] leading-relaxed"
+            className="w-full bg-transparent text-[#f1f5f9] placeholder-gray-500 text-sm sm:text-base resize-none focus:outline-none px-3 py-1.5 min-h-10.5 max-h-45 leading-relaxed"
           />
 
           {/* Action Button */}

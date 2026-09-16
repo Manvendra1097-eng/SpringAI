@@ -165,11 +165,10 @@ const CodeBlock = React.memo(function CodeBlock({ language, code }) {
 
         <button
           onClick={handleCopy}
-          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md border text-[11px] font-medium transition-colors cursor-pointer ${
-            copyStatus === 'error'
+          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md border text-[11px] font-medium transition-colors cursor-pointer ${copyStatus === 'error'
               ? 'bg-rose-950/40 border-rose-800/50 text-rose-400'
               : 'bg-[#1d222e] hover:bg-[#262c3b] border-[#2c3242] text-gray-300 hover:text-white'
-          }`}
+            }`}
           title={copyStatus === 'error' ? 'Copy failed' : 'Copy code'}
         >
           {copyStatus === 'copied' && (
@@ -196,7 +195,7 @@ const CodeBlock = React.memo(function CodeBlock({ language, code }) {
       {/* Code Editor Body with Line Numbers */}
       <div className="flex overflow-x-auto text-xs sm:text-[13px] font-mono leading-relaxed py-3 bg-[#0f1217] prism-code">
         {/* Line Numbers Column */}
-        <div className="select-none text-right pr-3.5 pl-3 text-[#4b5568] border-r border-[#1f232d] min-w-[2.5rem]">
+        <div className="select-none text-right pr-3.5 pl-3 text-[#4b5568] border-r border-[#1f232d] min-w-10">
           {highlightedLines.map((_, i) => (
             <div key={i}>{i + 1}</div>
           ))}

@@ -1,5 +1,5 @@
 import { AlertTriangle, Bot, Check, Copy, User } from 'lucide-react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { MarkdownContent } from './MarkdownContent';
 
 export function MessageItem({ message }) {
@@ -16,8 +16,8 @@ export function MessageItem({ message }) {
   return (
     <div
       className={`group flex gap-3 sm:gap-4 p-4 sm:p-5 rounded-xl transition-colors ${isUser
-          ? 'bg-[#151821] border border-[#262b3a] ml-4 sm:ml-12'
-          : 'bg-[#12141a] border border-[#202430] mr-4 sm:mr-12'
+        ? 'bg-[#151821] border border-[#262b3a] ml-4 sm:ml-12'
+        : 'bg-[#12141a] border border-[#202430] mr-4 sm:mr-12'
         }`}
     >
       {/* Avatar */}
@@ -29,8 +29,8 @@ export function MessageItem({ message }) {
         ) : (
           <div
             className={`w-8 h-8 rounded-lg flex items-center justify-center border transition-colors ${message.isStreaming
-                ? 'bg-[#0f241a] border-emerald-500/50 text-emerald-400 animate-pulse'
-                : 'bg-[#161a22] border-[#292f3e] text-emerald-400'
+              ? 'bg-[#0f241a] border-emerald-500/50 text-emerald-400 animate-pulse'
+              : 'bg-[#161a22] border-[#292f3e] text-emerald-400'
               }`}
           >
             <Bot className="w-4 h-4" />
