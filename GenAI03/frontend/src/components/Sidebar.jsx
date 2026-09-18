@@ -74,7 +74,7 @@ export function Sidebar({ isOpen, onClose, onNewChat, isStreaming }) {
         {/* Content Area (kept empty with sleek placeholder) */}
         <div className="flex-1 overflow-y-auto p-4 flex flex-col justify-center items-center text-center">
           {activeTab === 'history' ? (
-            <div className="flex flex-col items-center max-w-[200px] text-gray-400 py-8">
+            <div className="flex flex-col items-center max-w-50 text-gray-400 py-8">
               <div className="w-10 h-10 rounded-xl bg-[#171b24] border border-[#232938] flex items-center justify-center text-gray-400 mb-3">
                 <MessageSquare className="w-5 h-5 text-emerald-500/70" />
               </div>
@@ -84,7 +84,7 @@ export function Sidebar({ isOpen, onClose, onNewChat, isStreaming }) {
               </p>
             </div>
           ) : (
-            <div className="flex flex-col items-center max-w-[200px] text-gray-400 py-8">
+            <div className="flex flex-col items-center max-w-50] text-gray-400 py-8">
               <div className="w-10 h-10 rounded-xl bg-[#171b24] border border-[#232938] flex items-center justify-center text-gray-400 mb-3">
                 <FolderOpen className="w-5 h-5 text-emerald-500/70" />
               </div>

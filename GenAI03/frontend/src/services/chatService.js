@@ -2,7 +2,7 @@
  * Service to handle streaming chat communication with Spring AI backend.
  */
 export async function streamChatResponse({ message, onChunk, signal }) {
-  const response = await fetch('/api/chat/stream', {
+  const response = await fetch('/api/chat/jdbc/stream', {
     method: 'POST',
     headers: {
       'Content-Type': 'text/plain; charset=UTF-8',
